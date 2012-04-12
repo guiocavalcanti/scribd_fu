@@ -66,7 +66,7 @@ module ScribdFu
     # Upload a file to Scribd
     def upload(obj, file_path)
       begin
-        args = { :file => escape(file_path), :access => access_level }
+        args = { :file => file_path, :access => access_level }
         res = if obj.ipaper_my_user_id
           scribd_user
           args[:my_user_id] = obj.ipaper_my_user_id
@@ -104,16 +104,6 @@ module ScribdFu
       # Yes, catch-all rescues are bad, but the end rescue
       # should return nil, so laziness FTW.
       scribd_user.find_document(id) rescue nil
-    end
-
-    # Replace spaces with '%20' (needed by Paperclip models).
-    def escape(str)
-      basename = File.basename(str, ".*")
-      File.join(File.dirname(str), "#{url_encode(basename)}#{File.extname(str)}").to_s
-    end
-
-    def url_encode(str)
-      str.to_s.gsub(/[^a-zA-Z0-9_\-.]/n){ sprintf("%%%02X", $&.unpack("C")[0]) }
     end
 
     # See if a URL is S3 or CloudFront based
